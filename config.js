@@ -79,10 +79,10 @@ module.exports = {
       eth: {
         mixerAddress: {
           '0.01': '0x449EfDAdB9Dd5143a429A661c9161b01eDdaD81b',
-          '0.1': '0xa9560Ca31f74625095b2102a221c08cf579F6B05',
-          '1': '0xD6a6AC46d02253c938B96D12BE439F570227aE8E',
-          '10': '0xe1BE96331391E519471100c3c1528B66B8F4e5a7',
-          '100': '0xd037E0Ac98Dab2fCb7E296c69C6e52767Ae5414D'
+          '0.1': '0x17B21990Cf231aD2Ce277497ba22809008dbFe34',
+          '1': '0xb5648046c854Dd142BdEfCD5ac57B15356aF8654',
+          '10': '0x3F78A52cAd285ff1C135C9A8c2443198575f0e9D',
+          '100': '0xc963e5157a6c18822c87569B952F25D13C5c1196'
         },
         symbol: 'ETH',
         decimals: 18
