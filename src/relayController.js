@@ -1,11 +1,11 @@
 const Queue = require('bull')
 const { numberToHex, toWei, toHex, toBN, toChecksumAddress } = require('web3-utils')
 const mixerABI = require('../abis/mixerABI.json')
-const { isValidProof, isValidArgs, isKnownContract, isEnoughFee } = require('./utils')
+const { isValidProof, isValidArgs, isKnownContract, isEnoughFee, fetchGasPriceFromRpc } = require('./utils')
 const config = require('../config')
 const { redisClient, redisOpts } = require('./redis')
 
-const { web3, fetcher, sender, gasPriceOracle } = require('./instances')
+const { web3, fetcher, sender } = require('./instances');
 const withdrawQueue = new Queue('withdraw', redisOpts)
 
 const reponseCbs = {}
@@ -77,7 +77,9 @@ async function relayController(req, resp) {
 
 withdrawQueue.process(async function (job, done) {
   console.log(Date.now(), ' withdraw started', job.id)
-  const gasPrices = await gasPriceOracle.gasPrices()
+
+  var gasPrices = await fetchGasPriceFromRpc();
+
   const { contract, nullifierHash, root, proof, args, refund, currency, amount, fee } = job.data
   console.log(JSON.stringify(job.data))
   // job.data contains the custom data passed when the job was created
@@ -111,9 +113,9 @@ withdrawQueue.process(async function (job, done) {
     //   value: refund
     // })
 
-    let gas = 800000
+    let gas = 750000
     // gas += 50000
-    const ethPrices = fetcher.ethPrices
+    const ethPrices = fetcher.ethPrices;
     const { isEnough, reason } = isEnoughFee({
       gas,
       gasPrices,

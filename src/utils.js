@@ -1,3 +1,4 @@
+const { default: axios } = require('axios')
 const { isHexStrict, toBN, toWei, BN } = require('web3-utils')
 const { netId, mixers, relayerServiceFee } = require('../config')
 
@@ -167,6 +168,56 @@ function getMixers() {
   return mixers[`netId${netId}`]
 }
 
+/**
+ * Normalizes GasPrice values to Gwei. No more than 9 decimals basically
+ * @param GasPrice _gas
+ */
+function normalize(_gas) {
+  const gas = { ..._gas };
+  for (const type of Object.keys(gas)) {
+    gas[type] = toWei(gas[type].toFixed(0).toString(), 'wei');
+  }
+
+  return gas;
+}
+
+function categorize(gasPrice) {
+  return normalize({
+    instant: gasPrice * 1.3,
+    fast: gasPrice,
+    standard: gasPrice * 0.85,
+    low: gasPrice * 0.5,
+  });
+}
+
+
+async function fetchGasPriceFromRpc() {
+  const rpcUrl = process.env.RPC_URL;
+  const body = {
+    jsonrpc: '2.0',
+    id: 1337,
+    method: 'eth_gasPrice',
+    params: [],
+  };
+  try {
+    const response = await axios.post(rpcUrl, body, { timeout: process.env.TIMEOUT });
+    if (response.status === 200) {
+      const { result } = response.data;
+      let fastGasPrice =  toBN(result);
+      if (fastGasPrice.isZero()) {
+        throw new Error(`Default RPC provides corrupted values`);
+      }
+      fastGasPrice = fastGasPrice.div(toBN(1e9));
+      return categorize(fastGasPrice.toNumber());
+    }
+
+    throw new Error(`Fetch gasPrice from default RPC failed..`);
+  } catch (e) {
+    console.error(e.message);
+    throw new Error('Default RPC is down. Probably a network error.');
+  }
+}
+
 module.exports = {
   isValidProof,
   isValidArgs,
@@ -174,5 +225,6 @@ module.exports = {
   isKnownContract,
   isEnoughFee,
   getMixers,
-  getArgsForOracle
+  getArgsForOracle,
+  fetchGasPriceFromRpc
 }
