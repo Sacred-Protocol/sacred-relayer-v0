@@ -9,8 +9,8 @@ const {
   maxGasPrice
 } = require('../config')
 const relayController = require('./relayController')
-const { fetcher, web3, gasPriceOracle } = require('./instances')
-const { getMixers } = require('./utils')
+const { fetcher, web3 } = require('./instances')
+const { getMixers, fetchGasPriceFromRpc } = require('./utils')
 const mixers = getMixers()
 const { redisClient } = require('./redis')
 const { version } = require('../package.json')
@@ -51,7 +51,7 @@ app.get('/status', async function (req, res) {
   res.json({
     relayerAddress: web3.eth.defaultAccount,
     mixers,
-    gasPrices: await gasPriceOracle.gasPrices(),
+    gasPrices: await fetchGasPriceFromRpc(),
     netId,
     ethPrices,
     relayerServiceFee,
