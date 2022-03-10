@@ -8,6 +8,18 @@ module.exports = {
   oracleAddress: '0xA2b8E7ee7c8a18ea561A5CF7C9C365592026E374',
   privateKey: process.env.PRIVATE_KEY,
   mixers: {
+    netId1: {
+      eth: {
+        mixerAddress: {
+          '0.1': '0x0',
+          '1': '0x0',
+          '10': '0x0',
+          '100': '0x0'
+        },
+        symbol: 'ETH',
+        decimals: 18
+      },
+    },
     netId4: {
       eth: {
         mixerAddress: {
