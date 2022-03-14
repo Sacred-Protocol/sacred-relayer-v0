@@ -2,40 +2,83 @@ version: '2'
 
 services:
   kovan:
-    image: tornadocash/relayer:v3.0.3
+    build: .
     restart: always
     environment:
-      VIRTUAL_HOST: example.duckdns.org
-      LETSENCRYPT_HOST: example.duckdns.org
+      VIRTUAL_HOST: kovan.localhost
+      SELF_SIGNED_HOST: kovan.localhost
+      LETSENCRYPT_HOST: kovan.localhost
       NET_ID: 42
-      RPC_URL: https://kovan.infura.io
+      RPC_URL: https://eth-kovan.alchemyapi.io/v2/${ALCHEMY_KEY}
       # ORACLE_RPC_URL should always point to the mainnet
-      ORACLE_RPC_URL: https://mainnet.infura.io
+      ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
       # without 0x prefix
-      PRIVATE_KEY:
+      PRIVATE_KEY: ${KOVAN_PK}
       # 2.5 means 2.5%
-      RELAYER_FEE: 2.5
+      RELAYER_FEE: 1
       REDIS_URL: redis://redis/0
+      TIMEOUT: 15000
       nginx_proxy_read_timeout: 600
+      APP_PORT: 8000
+      NONCE_WATCHER_INTERVAL: 30
+      ALLOWABLE_PENDING_TX_TIMEOUT: 180
+      MAX_GAS_PRICE: 200
+      GAS_PRICE_BUMP_PERCENTAGE: 20
+
+    depends_on:
+      - redis
+
+  rinkeby:
+    build: .
+    restart: always
+    environment:
+      VIRTUAL_HOST: rinkeby.localhost
+      SELF_SIGNED_HOST: rinkeby.localhost
+      LETSENCRYPT_HOST: rinkeby.localhost
+      NET_ID: 4
+      RPC_URL: https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_KEY}
+      # ORACLE_RPC_URL should always point to the mainnet
+      ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
+      # without 0x prefix
+      PRIVATE_KEY: ${RINKEBY_PK}
+      # 2.5 means 2.5%
+      RELAYER_FEE: 1
+      REDIS_URL: redis://redis/1
+      TIMEOUT: 15000
+      nginx_proxy_read_timeout: 600
+      APP_PORT: 8000
+      NONCE_WATCHER_INTERVAL: 30
+      ALLOWABLE_PENDING_TX_TIMEOUT: 180
+      MAX_GAS_PRICE: 200
+      GAS_PRICE_BUMP_PERCENTAGE: 20
+
     depends_on:
       - redis
 
   mainnet:
-    image: tornadocash/relayer:v3.0.3
+    build: .
     restart: always
     environment:
-      VIRTUAL_HOST: example2.duckdns.org
-      LETSENCRYPT_HOST: example2.duckdns.org
+      VIRTUAL_HOST: mainnet.localhost
+      SELF_SIGNED_HOST: mainnet.localhost
+      LETSENCRYPT_HOST: mainnet.localhost
       NET_ID: 1
-      RPC_URL: https://mainnet.infura.io
+      RPC_URL: https://eth.alchemyapi.io/v2/${ALCHEMY_KEY}
       # ORACLE_RPC_URL should always point to the mainnet
-      ORACLE_RPC_URL: https://mainnet.infura.io
+      ORACLE_RPC_URL: https://eth.alchemyapi.io/v2/${ALCHEMY_KEY}
       # without 0x prefix
-      PRIVATE_KEY:
+      PRIVATE_KEY: ${MAINNET_PK}
       # 2.5 means 2.5%
-      RELAYER_FEE: 2.5
-      REDIS_URL: redis://redis/1
+      RELAYER_FEE: 1
+      REDIS_URL: redis://redis/2
+      TIMEOUT: 15000
       nginx_proxy_read_timeout: 600
+      APP_PORT: 8000
+      NONCE_WATCHER_INTERVAL: 30
+      ALLOWABLE_PENDING_TX_TIMEOUT: 180
+      MAX_GAS_PRICE: 200
+      GAS_PRICE_BUMP_PERCENTAGE: 20
+
     depends_on:
       - redis
 
@@ -89,7 +132,9 @@ services:
   redis:
     image: redis
     restart: always
-    command: [redis-server, --appendonly, 'yes']
+    command: [redis-server, --appendonly, 'yes', '--port', '6379']
+    ports:
+      - 6379:6379
     volumes:
       - redis:/data
 
@@ -105,9 +150,7 @@ services:
       - vhost:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
       - certs:/etc/nginx/certs
-    logging:
-      driver: none
-
+    
   dockergen:
     image: poma/docker-gen
     container_name: dockergen
@@ -118,15 +161,25 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: letsencrypt
+  proxy-companion:        
+    container_name: proxy-companion
     restart: always
-    environment:
-      NGINX_DOCKER_GEN_CONTAINER: dockergen
+    image: sebastienheyd/self-signed-proxy-companion
     volumes_from:
-      - nginx
-      - dockergen
+        - nginx
+        - dockergen
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  # letsencrypt:
+  #   image: jrcs/letsencrypt-nginx-proxy-companion
+  #   container_name: letsencrypt
+  #   restart: always
+  #   environment:
+  #     NGINX_DOCKER_GEN_CONTAINER: dockergen
+  #   volumes_from:
+  #     - nginx
+  #     - dockergen
 
 volumes:
   conf:
