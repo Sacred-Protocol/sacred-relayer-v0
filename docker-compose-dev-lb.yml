@@ -2,7 +2,7 @@ version: '2'
 
 services:
   kovan:
-    image: 020804786333.dkr.ecr.us-east-2.amazonaws.com/sacred-relay:latest
+    image: ${RELAY_IMAGE}
     restart: always
     environment:
       VIRTUAL_HOST: kovan.localhost
@@ -29,7 +29,7 @@ services:
       - redis
 
   rinkeby:
-    image: 020804786333.dkr.ecr.us-east-2.amazonaws.com/sacred-relay:latest
+    image: ${RELAY_IMAGE}
     restart: always
     environment:
       VIRTUAL_HOST: rinkeby.localhost
@@ -56,7 +56,7 @@ services:
       - redis
 
   mainnet:
-    image: 020804786333.dkr.ecr.us-east-2.amazonaws.com/sacred-relay:latest
+    image: ${RELAY_IMAGE}
     restart: always
     environment:
       VIRTUAL_HOST: mainnet.localhost
