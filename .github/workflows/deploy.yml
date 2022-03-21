@@ -1,7 +1,7 @@
-name: Deploy Dev
+name: Deploy Sacred Relayer to VPS
 on:
   push:
-    branches: [ dev ]
+    branches: [ dev, master ]
 
 env: 
   ECR_REPOSITORY: sacred-relay
@@ -13,17 +13,6 @@ jobs:
     steps:
       - name: checkout latest
         uses: actions/checkout@v2 
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@13d241b293754004c80624b5567555c4a39ffbe3
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@aaf69d68aa3fb14c1d5a6be9ac61fe15b48453a2
 
       - name: Set Environment
         id: set-env
@@ -43,6 +32,18 @@ jobs:
             echo "::set-output name=RINKEBY_PK::${{ secrets.RINKEBY_PK_DEV }}"
             echo "::set-output name=ALCHEMY_KEY::${{ secrets.ALCHEMY_KEY_DEV }}"
           fi
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@13d241b293754004c80624b5567555c4a39ffbe3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ steps.set-env.outputs.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@aaf69d68aa3fb14c1d5a6be9ac61fe15b48453a2
+
       - name: Build images
         id: build-image
         env:
@@ -76,7 +77,7 @@ jobs:
             export AWS_REGION=${{ steps.set-env.outputs.AWS_REGION }}
             export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
             export RELAY_IMAGE=${{ steps.build-image.outputs.image }}
-            aws configure set region ${{ env.AWS_REGION }}
+            aws configure set region $AWS_REGION
             aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
             aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
