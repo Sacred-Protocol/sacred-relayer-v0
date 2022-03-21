@@ -2,28 +2,29 @@
 
 This is based off the Tornado cash relay deploy. We use docker-compose to keep the deployment consistent across environments. The service is deployed to an existing VPS (currently on AWS) via SSH.
 
-The `docker-compose-*.yml` files contain the deployment configurations. It builds services for each network, and provides an HTTPS terminated NGINX proxy using LetsEncrypt or Self signed certificates.
+The `docker-compose-*.yml` files contain the deployment configurations. It builds services for each network, a redis instance for the environment, and provides an HTTPS terminated NGINX proxy using LetsEncrypt or Self signed certificates.
 
 For v0 Secrets are stored in github build environment and written to the VPS environment on deploy
 
-For v1 the secrets will be stored in the provider secret store
-
 ## Environment
 
-Required Environment Variables
+Required Environment Variables. These have (_PROD | _DEV) versions e.g. KOVAN_PK_DEV and KOVAN_PK_PROD. These are written to the VPS environment on deploy and are then available to the instances started by docker compose.
 
 - KOVAN_PK
 - RINKEBY_PK
 - MAINNET_PK
 - {othernetwork}_PK (these will come as needed)
 - ALCHEMY_KEY
+- AWS_REGION
+- HOSTS
 
 Github Specific
 
-- AWS_REGION
 - AWS_ACCOUNT_ID
 - AWS_ACCESS_KEY_ID
 - AWS_SECRET_ACCESS_KEY
+- AWS_PK (ssh key)
+- AWS_USER (ssh user)
 
 ## Deploy / Startup Commands
 
@@ -80,6 +81,10 @@ For a load balancing service such as Cloudflare, AWS load balancers, etc that ne
         docker-compose -f docker-compose-env-lb.yml down
 
 ## VPS Configuration
+
+- Use the image https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#ImageDetails:imageId=ami-09c44327ce02a2a6f and `Launch Instance from image`
+
+or 
 
 - Create VPS on Ubuntu 20.04 (or latest LTS)
 - Install Docker

@@ -4,7 +4,6 @@ on:
     branches: [ dev ]
 
 env: 
-  AWS_REGION: us-east-2
   ECR_REPOSITORY: sacred-relay
 
 jobs:
@@ -26,6 +25,24 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@aaf69d68aa3fb14c1d5a6be9ac61fe15b48453a2
 
+      - name: Set Environment
+        id: set-env
+        run: |
+          if [[ $GITHUB_REF == 'refs/heads/master' ]]; then
+            echo "::set-output name=AWS_REGION::${{ secrets.AWS_REGION_PROD }}"
+            echo "::set-output name=HOSTS::${{ secrets.HOSTS_PROD }}"
+            echo "::set-output name=KOVAN_PK::${{ secrets.KOVAN_PK_PROD }}"
+            echo "::set-output name=MAINNET_PK::${{ secrets.MAINNET_PK_PROD }}"
+            echo "::set-output name=RINKEBY_PK::${{ secrets.RINKEBY_PK_PROD }}"
+            echo "::set-output name=ALCHEMY_KEY::${{ secrets.ALCHEMY_KEY_PROD }}"
+          else
+            echo "::set-output name=AWS_REGION::${{ secrets.AWS_REGION_DEV }}"
+            echo "::set-output name=HOSTS::${{ secrets.HOSTS_DEV }}"
+            echo "::set-output name=KOVAN_PK::${{ secrets.KOVAN_PK_DEV }}"
+            echo "::set-output name=MAINNET_PK::${{ secrets.MAINNET_PK_DEV }}"
+            echo "::set-output name=RINKEBY_PK::${{ secrets.RINKEBY_PK_DEV }}"
+            echo "::set-output name=ALCHEMY_KEY::${{ secrets.ALCHEMY_KEY_DEV }}"
+          fi
       - name: Build images
         id: build-image
         env:
@@ -40,7 +57,7 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           key: ${{ secrets.AWS_PK  }}
-          host: ${{ secrets.HOSTS_DEV }}
+          host: ${{ steps.set-env.outputs.HOSTS }}
           username: ${{ secrets.AWS_USER }}
           source: "docker-compose-dev.yml"
           target: "relay-deploy"
@@ -49,14 +66,14 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           key: ${{ secrets.AWS_PK }}
-          host: ${{ secrets.HOSTS_DEV }}
+          host: ${{ steps.set-env.outputs.HOSTS }}
           username: ${{ secrets.AWS_USER }}
           script: |
-            export KOVAN_PK=${{ secrets.KOVAN_PK_DEV }}
-            export RINKEBY_PK=${{ secrets.RINKEBY_PK_DEV }}
-            export MAINNET_PK=${{ secrets.MAINNET_PK_DEV }}
-            export ALCHEMY_KEY=${{ secrets.ALCHEMY_KEY_DEV }}
-            export AWS_REGION=${{ env.AWS_REGION }}
+            export KOVAN_PK=${{ steps.set-env.outputs.KOVAN_PK }}
+            export RINKEBY_PK=${{ steps.set-env.outputs.RINKEBY_PK }}
+            export MAINNET_PK=${{ steps.set-env.outputs.MAINNET_PK }}
+            export ALCHEMY_KEY=${{ steps.set-env.outputs.ALCHEMY_KEY }}
+            export AWS_REGION=${{ steps.set-env.outputs.AWS_REGION }}
             export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
             export RELAY_IMAGE=${{ steps.build-image.outputs.image }}
             aws configure set region ${{ env.AWS_REGION }}
