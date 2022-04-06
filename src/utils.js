@@ -128,6 +128,12 @@ function isEnoughFee({ gas, gasPrices, currency, amount, refund, ethPrices, fee 
       desiredFee = expense.add(feePercent)
       break
     }
+
+    case 'matic': {
+      desiredFee = expense.add(feePercent)
+      break
+    }
+
     default: {
       desiredFee = expense
         .add(refund)

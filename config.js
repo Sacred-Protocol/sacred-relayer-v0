@@ -45,7 +45,7 @@ module.exports = {
       }
     },
     netId80001: {
-      eth: {
+      matic: {
         mixerAddress: {
           0.1: "0x91CCB886d9E0A916c76eE17cD311A276d1a4C40f",
           1: "0x1731094433BE73250707bDF94FdB4B1bf0BDbAca",
