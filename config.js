@@ -11,8 +11,8 @@ module.exports = {
     netId1: {
       eth: {
         mixerAddress: {
-          '0.1': '0x0',
-          '1': '0x0',
+          '0.1': "0x69ADD7A9a222447e857ac3926F7B87dD0868A13c",
+          '1': "0x5F7b0bC185eF688D15ab0bD0320DD7C0D7A567Cc",
           '10': '0x0',
           '100': '0x0'
         },
