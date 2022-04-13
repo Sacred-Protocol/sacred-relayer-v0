@@ -23,6 +23,8 @@ jobs:
             echo "::set-output name=KOVAN_PK::${{ secrets.KOVAN_PK_PROD }}"
             echo "::set-output name=MAINNET_PK::${{ secrets.MAINNET_PK_PROD }}"
             echo "::set-output name=RINKEBY_PK::${{ secrets.RINKEBY_PK_PROD }}"
+            echo "::set-output name=MUMBAI_PK::${{ secrets.MUMBAI_PK_PROD }}"
+            echo "::set-output name=MUMBAI_PK::${{ secrets.POLYGON_PK_PROD }}"
             echo "::set-output name=ALCHEMY_KEY::${{ secrets.ALCHEMY_KEY_PROD }}"
           else
             echo "::set-output name=AWS_REGION::${{ secrets.AWS_REGION_DEV }}"
@@ -30,6 +32,8 @@ jobs:
             echo "::set-output name=KOVAN_PK::${{ secrets.KOVAN_PK_DEV }}"
             echo "::set-output name=MAINNET_PK::${{ secrets.MAINNET_PK_DEV }}"
             echo "::set-output name=RINKEBY_PK::${{ secrets.RINKEBY_PK_DEV }}"
+            echo "::set-output name=MUMBAI_PK::${{ secrets.MUMBAI_PK_DEV }}"
+            echo "::set-output name=MUMBAI_PK::${{ secrets.POLYGON_PK_DEV }}"
             echo "::set-output name=ALCHEMY_KEY::${{ secrets.ALCHEMY_KEY_DEV }}"
           fi
       
@@ -73,6 +77,8 @@ jobs:
             export KOVAN_PK=${{ steps.set-env.outputs.KOVAN_PK }}
             export RINKEBY_PK=${{ steps.set-env.outputs.RINKEBY_PK }}
             export MAINNET_PK=${{ steps.set-env.outputs.MAINNET_PK }}
+            export MUMBAI_PK=${{ steps.set-env.outputs.MUMBAI_PK }}
+            export POLYGON_PK=${{ steps.set-env.outputs.POLYGON_PK }}
             export ALCHEMY_KEY=${{ steps.set-env.outputs.ALCHEMY_KEY }}
             export AWS_REGION=${{ steps.set-env.outputs.AWS_REGION }}
             export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
