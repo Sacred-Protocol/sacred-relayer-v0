@@ -93,7 +93,7 @@ services:
       # ORACLE_RPC_URL should always point to the mainnet
       ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
       # without 0x prefix
-      PRIVATE_KEY: ${MUMBAI_TESTNET_PK}
+      PRIVATE_KEY: ${MUMBAI_PK}
       # 2.5 means 2.5%
       RELAYER_FEE: 0.01
       REDIS_URL: redis://redis/2
@@ -107,6 +107,33 @@ services:
 
     depends_on:
       - redis
+
+  # polygon_mainnet:
+  #   build: .
+  #   restart: always
+  #   environment:
+  #     VIRTUAL_HOST: polygon.localhost
+  #     LETSENCRYPT_HOST: polygon.localhost
+  #     NET_ID: 80001
+  #     RPC_URL: https://polygon.g.alchemyapi.io/v2/${ALCHEMY_KEY}
+  #     # ORACLE_RPC_URL should always point to the mainnet
+  #     ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
+  #     # without 0x prefix
+  #     PRIVATE_KEY: ${POLYGON_PK}
+  #     # 2.5 means 2.5%
+  #     RELAYER_FEE: 0.01
+  #     REDIS_URL: redis://redis/3
+  #     TIMEOUT: 15000
+  #     nginx_proxy_read_timeout: 600
+  #     APP_PORT: 8000
+  #     NONCE_WATCHER_INTERVAL: 30
+  #     ALLOWABLE_PENDING_TX_TIMEOUT: 180
+  #     MAX_GAS_PRICE: 200
+  #     GAS_PRICE_BUMP_PERCENTAGE: 20
+
+  #   depends_on:
+  #     - redis
+
 
   # mainnet:
   #   build: .
@@ -123,7 +150,7 @@ services:
   #     PRIVATE_KEY: ${MAINNET_PK}
   #     # 2.5 means 2.5%
   #     RELAYER_FEE: 0.01
-  #     REDIS_URL: redis://redis/2
+  #     REDIS_URL: redis://redis/4
   #     TIMEOUT: 15000
   #     nginx_proxy_read_timeout: 600
   #     APP_PORT: 8000
