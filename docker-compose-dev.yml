@@ -91,7 +91,7 @@ services:
       # without 0x prefix
       PRIVATE_KEY: ${MUMBAI_TESTNET_PK}
       # 2.5 means 2.5%
-      RELAYER_FEE: 1
+      RELAYER_FEE: 0.01
       REDIS_URL: redis://redis/2
       TIMEOUT: 15000
       nginx_proxy_read_timeout: 600
