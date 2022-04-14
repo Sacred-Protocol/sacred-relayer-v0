@@ -87,6 +87,7 @@ For a load balancing service such as Cloudflare, AWS load balancers, etc that ne
 or 
 
 - Create VPS on Ubuntu 20.04 (or latest LTS)
+
 - Install Docker
 
         sudo apt update
@@ -108,10 +109,28 @@ or
         ssh-keygen -t ed25519 -C "dev@sacred.finance"
 
 - Append the public key to ~/.ssh/authorized_keys on the VPS
+
 - Add the private key to Github settings in the repository
+
 - Install the aws cli
 
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
         unzip awscliv2.zip
         sudo ./aws/install
 
+- create/root/.aws/credentials
+
+- credentials format
+
+        [sacred]
+                aws_access_key_id= 
+                aws_secret_access_key= 
+- restrict access to creds
+
+        sudo chmod 0400 /root/.aws/credentials
+
+- install aws cloudwatch agent
+
+        sudo apt-get -y install python2.7
+        curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O
+        python2.7 ./awslogs-agent-setup.py --region us-east-2
