@@ -61,6 +61,12 @@ services:
       - redis
     logging:
       driver: awslogs
+      options:
+        awslogs-region: us-east-2
+        awslogs-group: sacred-relay-v0-dev
+        awslogs-stream: kovan
+        awslogs-create-group: true
+        awslogs-datetime-format: "%b %d %H:%M:%S"
 
   rinkeby:
     image: ${RELAY_IMAGE}
@@ -88,6 +94,12 @@ services:
       - redis
     logging:
       driver: awslogs
+      options:
+        awslogs-region: us-east-2
+        awslogs-group: sacred-relay-v0-dev
+        awslogs-stream: rinkeby
+        awslogs-create-group: true
+        awslogs-datetime-format: "%b %d %H:%M:%S"
 
   mumbai_testnet:
     image: ${RELAY_IMAGE}
@@ -115,6 +127,12 @@ services:
       - redis
     logging:
       driver: awslogs
+      options:
+        awslogs-region: us-east-2
+        awslogs-group: sacred-relay-v0-dev
+        awslogs-stream: mumbai
+        awslogs-create-group: true
+        awslogs-datetime-format: "%b %d %H:%M:%S"
 
 
   # polygon_mainnet:
@@ -142,7 +160,13 @@ services:
   #   depends_on:
   #     - redis
   #   logging:
-  #     driver: awslogs
+  # driver: awslogs
+  #   options:
+  #     awslogs-region: us-east-2
+  #     awslogs-group: sacred-relay-v0-dev
+  #     awslogs-stream: polygon
+  #     awslogs-create-group: true
+  #     awslogs-datetime-format: "%b %d %H:%M:%S"
 
   #  # this container will proxy *.onion domain to the mainnet container
   #  tor:
