@@ -85,9 +85,9 @@ services:
     build: .
     restart: always
     environment:
-      VIRTUAL_HOST: mumbai-testnet.localhost
-      SELF_SIGNED_HOST: mumbai-testnet.localhost
-      LETSENCRYPT_HOST: mumbai-testnet.localhost
+      VIRTUAL_HOST: mumbai.localhost
+      SELF_SIGNED_HOST: mumbai.localhost
+      LETSENCRYPT_HOST: mumbai.localhost
       NET_ID: 80001
       RPC_URL: https://polygon-mumbai.g.alchemyapi.io/v2/${ALCHEMY_KEY}
       # ORACLE_RPC_URL should always point to the mainnet
