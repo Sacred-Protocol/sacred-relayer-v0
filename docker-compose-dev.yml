@@ -32,7 +32,7 @@ services:
         awslogs-group: sacred-relay-v0-dev
         awslogs-stream: mainnet
         awslogs-create-group: true
-        awslogs-datetime-format: "%b %d %H:%M:%S"
+        awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
         
 
   kovan:
@@ -66,7 +66,7 @@ services:
         awslogs-group: sacred-relay-v0-dev
         awslogs-stream: kovan
         awslogs-create-group: true
-        awslogs-datetime-format: "%b %d %H:%M:%S"
+        awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
 
   rinkeby:
     image: ${RELAY_IMAGE}
@@ -99,7 +99,7 @@ services:
         awslogs-group: sacred-relay-v0-dev
         awslogs-stream: rinkeby
         awslogs-create-group: true
-        awslogs-datetime-format: "%b %d %H:%M:%S"
+        awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
 
   mumbai_testnet:
     image: ${RELAY_IMAGE}
@@ -132,7 +132,7 @@ services:
         awslogs-group: sacred-relay-v0-dev
         awslogs-stream: mumbai
         awslogs-create-group: true
-        awslogs-datetime-format: "%b %d %H:%M:%S"
+        awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
 
 
   # polygon_mainnet:
@@ -166,7 +166,7 @@ services:
   #         awslogs-group: sacred-relay-v0-dev
   #         awslogs-stream: polygon
   #         awslogs-create-group: true
-  #         awslogs-datetime-format: "%b %d %H:%M:%S"
+  #         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
 
   #  # this container will proxy *.onion domain to the mainnet container
   #  tor:
@@ -230,7 +230,7 @@ services:
         awslogs-group: sacred-relay-v0-dev
         awslogs-stream: redis
         awslogs-create-group: true
-        awslogs-datetime-format: "%b %d %H:%M:%S"
+        awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
   
   nginx:
     image: nginx:alpine
@@ -251,7 +251,7 @@ services:
         awslogs-group: sacred-relay-v0-dev
         awslogs-stream: nginx
         awslogs-create-group: true
-        awslogs-datetime-format: "%b %d %H:%M:%S"
+        awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
 
   dockergen:
     image: poma/docker-gen
