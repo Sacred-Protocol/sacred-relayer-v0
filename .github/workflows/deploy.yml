@@ -101,7 +101,7 @@ jobs:
         with:
           github-token: ${{ secrets.github_token }}
           discord-webhook: ${{ steps.set-env.outputs.DISCORD_WEBHOOK }}
-          title: '${{ github.workflow }}: {{ STATUS }}'
+          title: '${{ github.workflow }}: ${{ STATUS }}'
           description: "Sacred Relay Image `${{ steps.build-image.outputs.image }}` deploy ${{ STATUS }}.\n\nLogs available here: https://us-east-2.console.aws.amazon.com/cloudwatch/home?region=us-east-2#logsV2:log-groups/log-group/sacred-relay-v0-dev"
           color-success: '#4287f5'
           color-failure: 'eb4034'
