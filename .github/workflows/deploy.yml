@@ -26,6 +26,7 @@ jobs:
             echo "::set-output name=MUMBAI_PK::${{ secrets.MUMBAI_PK_PROD }}"
             echo "::set-output name=MUMBAI_PK::${{ secrets.POLYGON_PK_PROD }}"
             echo "::set-output name=ALCHEMY_KEY::${{ secrets.ALCHEMY_KEY_PROD }}"
+            echo "::set-output name=DISCORD_WEBHOOK::${{ secrets.DISCORD_WEBHOOK_PROD }}"
           else
             echo "::set-output name=AWS_REGION::${{ secrets.AWS_REGION_DEV }}"
             echo "::set-output name=HOSTS::${{ secrets.HOSTS_DEV }}"
@@ -35,6 +36,7 @@ jobs:
             echo "::set-output name=MUMBAI_PK::${{ secrets.MUMBAI_PK_DEV }}"
             echo "::set-output name=MUMBAI_PK::${{ secrets.POLYGON_PK_DEV }}"
             echo "::set-output name=ALCHEMY_KEY::${{ secrets.ALCHEMY_KEY_DEV }}"
+            echo "::set-output name=DISCORD_WEBHOOK::${{ secrets.DISCORD_WEBHOOK_DEV }}"
           fi
       
       - name: Configure AWS credentials
@@ -94,7 +96,7 @@ jobs:
       
       - name: Discord notification
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_WEBHOOK: ${{ steps.set-env.outputs.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
           args: "Sacred Relay Image `${{ steps.build-image.outputs.image }}` Deployed.\n\nLogs available here: https://us-east-2.console.aws.amazon.com/cloudwatch/home?region=us-east-2#logsV2:log-groups/log-group/sacred-relay-v0-dev"
