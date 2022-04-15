@@ -101,8 +101,7 @@ jobs:
         if: always()
         with:
           webhook: ${{ steps.set-env.outputs.DISCORD_WEBHOOK }}
-          title: "${{ github.workflow }}: ${{ job.status }}"
-          description: "Sacred Relay deploy ${{ job.status }}\n\nImage `${{ steps.build-image.outputs.image }}`\n\nLogs available here: https://us-east-2.console.aws.amazon.com/cloudwatch/home?region=us-east-2#logsV2:log-groups/log-group/sacred-relay-v0-dev"
+          title: "${{ github.workflow }}"
+          description: "Sacred Relay V0 deploy ${{ job.status }}\n\nImage `${{ steps.build-image.outputs.image }}`\n\nLogs available here: https://us-east-2.console.aws.amazon.com/cloudwatch/home?region=us-east-2#logsV2:log-groups/log-group/sacred-relay-v0-dev"
           image: ${{ secrets.EMBED_IMAGE }}
-          color: 0x0000ff
           
