@@ -97,4 +97,4 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: "Sacred Relay Image ${{ steps.build-image.outputs.image }} Deployed.\n\nLogs available here: https://us-east-2.console.aws.amazon.com/cloudwatch/home?region=us-east-2#logsV2:log-groups/log-group/sacred-relay-v0-dev"
+          args: "Sacred Relay Image `${{ steps.build-image.outputs.image }}` Deployed.\n\nLogs available here: https://us-east-2.console.aws.amazon.com/cloudwatch/home?region=us-east-2#logsV2:log-groups/log-group/sacred-relay-v0-dev"
