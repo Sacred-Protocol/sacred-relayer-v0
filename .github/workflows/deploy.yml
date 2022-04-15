@@ -82,6 +82,8 @@ jobs:
             export ALCHEMY_KEY=${{ steps.set-env.outputs.ALCHEMY_KEY }}
             export AWS_REGION=${{ steps.set-env.outputs.AWS_REGION }}
             export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
+            export AWS_LOGGER_ACCESS_KEY_ID=${{ secrets.AWS_LOGGER_ACCESS_KEY_ID }}
+            export AWS_LOGGER_SECRET_ACCESS_KEY=${{ secrets.AWS_LOGGER_SECRET_ACCESS_KEY }}
             export RELAY_IMAGE=${{ steps.build-image.outputs.image }}
             aws configure set region $AWS_REGION
             aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
