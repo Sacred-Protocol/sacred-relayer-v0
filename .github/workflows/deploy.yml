@@ -26,6 +26,8 @@ jobs:
             echo "::set-output name=MUMBAI_PK::${{ secrets.MUMBAI_PK_PROD }}"
             echo "::set-output name=MUMBAI_PK::${{ secrets.POLYGON_PK_PROD }}"
             echo "::set-output name=ALCHEMY_KEY::${{ secrets.ALCHEMY_KEY_PROD }}"
+            echo "::set-output name=DISCORD_WEBHOOK::${{ secrets.DISCORD_WEBHOOK_PROD }}"
+            echo "::set-output name=DOCKER_COMPOSE_FILE::docker-compose-prod.yml"
           else
             echo "::set-output name=AWS_REGION::${{ secrets.AWS_REGION_DEV }}"
             echo "::set-output name=HOSTS::${{ secrets.HOSTS_DEV }}"
@@ -35,6 +37,8 @@ jobs:
             echo "::set-output name=MUMBAI_PK::${{ secrets.MUMBAI_PK_DEV }}"
             echo "::set-output name=MUMBAI_PK::${{ secrets.POLYGON_PK_DEV }}"
             echo "::set-output name=ALCHEMY_KEY::${{ secrets.ALCHEMY_KEY_DEV }}"
+            echo "::set-output name=DISCORD_WEBHOOK::${{ secrets.DISCORD_WEBHOOK_DEV }}"
+            echo "::set-output name=DOCKER_COMPOSE_FILE::docker-compose-dev.yml"
           fi
       
       - name: Configure AWS credentials
@@ -64,7 +68,7 @@ jobs:
           key: ${{ secrets.AWS_PK  }}
           host: ${{ steps.set-env.outputs.HOSTS }}
           username: ${{ secrets.AWS_USER }}
-          source: "docker-compose-dev.yml"
+          source: "${{ steps.set-env.outputs.DOCKER_COMPOSE_FILE }}"
           target: "relay-deploy"
 
       - name: Set Env and Redeploy
@@ -89,12 +93,15 @@ jobs:
             aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
             aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-            docker compose -f relay-deploy/docker-compose-dev.yml up -d
+            docker compose -f relay-deploy/${{ steps.set-env.outputs.DOCKER_COMPOSE_FILE }} up -d
             docker image prune -af
-      
-      - name: Discord notification
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
+
+      - name: Notify
+        uses: sarisia/actions-status-discord@v1
+        if: always()
         with:
-          args: "Sacred Relay Image `${{ steps.build-image.outputs.image }}` Deployed.\n\nLogs available here: https://us-east-2.console.aws.amazon.com/cloudwatch/home?region=us-east-2#logsV2:log-groups/log-group/sacred-relay-v0-dev"
+          webhook: ${{ steps.set-env.outputs.DISCORD_WEBHOOK }}
+          title: "${{ github.workflow }}"
+          description: "Sacred Relay V0 deploy ${{ job.status }}\n\nImage `${{ steps.build-image.outputs.image }}`\n\nLogs available here: https://us-east-2.console.aws.amazon.com/cloudwatch/home?region=us-east-2#logsV2:log-groups/log-group/sacred-relay-v0-dev"
+          image: ${{ secrets.EMBED_IMAGE }}
+          
