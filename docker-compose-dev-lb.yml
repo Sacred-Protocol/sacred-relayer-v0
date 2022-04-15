@@ -1,3 +1,7 @@
+# This is the version to be used with a load balancer. Each container has a self signed SSL cert.
+# The load balancer should terminate the public SSL
+# Containers can be accessed by the instance url
+
 version: '2'
 
 services:
