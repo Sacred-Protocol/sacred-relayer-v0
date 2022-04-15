@@ -97,12 +97,12 @@ jobs:
             docker image prune -af
 
       - name: Notify
-        uses: nobrayner/discord-webhook@v1
+        uses: sarisia/actions-status-discord@v1
+        if: always()
         with:
-          github-token: ${{ secrets.github_token }}
-          discord-webhook: ${{ steps.set-env.outputs.DISCORD_WEBHOOK }}
-          title: '${{ github.workflow }}: ${{ STATUS }}'
-          description: "Sacred Relay Image `${{ steps.build-image.outputs.image }}` deploy ${{ STATUS }}.\n\nLogs available here: https://us-east-2.console.aws.amazon.com/cloudwatch/home?region=us-east-2#logsV2:log-groups/log-group/sacred-relay-v0-dev"
-          color-success: '#4287f5'
-          color-failure: 'eb4034'
-          color-cancelled: '0x42daf5'
+          webhook: ${{ steps.set-env.outputs.DISCORD_WEBHOOK }}
+          title: "${{ github.workflow }}: ${{ job.status }}"
+          description: "Sacred Relay deploy ${{ job.status }}\n\nImage `${{ steps.build-image.outputs.image }}`\n\nLogs available here: https://us-east-2.console.aws.amazon.com/cloudwatch/home?region=us-east-2#logsV2:log-groups/log-group/sacred-relay-v0-dev"
+          image: ${{ secrets.EMBED_IMAGE }}
+          color: 0x0000ff
+          
