@@ -35,7 +35,7 @@ services:
         awslogs-region: us-east-2
         awslogs-group: sacred-relay-v0-dev
         awslogs-stream: mainnet
-        awslogs-create-group: true
+        awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
   
   kovan:
@@ -71,7 +71,7 @@ services:
         awslogs-region: us-east-2
         awslogs-group: sacred-relay-v0-dev
         awslogs-stream: kovan
-        awslogs-create-group: true
+        awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
   
   rinkeby:
@@ -107,7 +107,7 @@ services:
         awslogs-region: us-east-2
         awslogs-group: sacred-relay-v0-dev
         awslogs-stream: rinkeby
-        awslogs-create-group: true
+        awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
  
   mumbai_testnet:
@@ -143,7 +143,7 @@ services:
         awslogs-region: us-east-2
         awslogs-group: sacred-relay-v0-dev
         awslogs-stream: mumbai
-        awslogs-create-group: true
+        awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
 
  # polygon_mainnet:
@@ -178,7 +178,7 @@ services:
   #         awslogs-region: us-east-2
   #         awslogs-group: sacred-relay-v0-dev
   #         awslogs-stream: polygon
-  #         awslogs-create-group: true
+  #         awslogs-create-group: "true"
   #         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
 
   #  # this container will proxy *.onion domain to the mainnet container
@@ -242,7 +242,7 @@ services:
         awslogs-region: us-east-2
         awslogs-group: sacred-relay-v0-dev
         awslogs-stream: redis
-        awslogs-create-group: true
+        awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
 
   nginx:
@@ -263,7 +263,7 @@ services:
         awslogs-region: us-east-2
         awslogs-group: sacred-relay-v0-dev
         awslogs-stream: nginx
-        awslogs-create-group: true
+        awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
         
   dockergen:
