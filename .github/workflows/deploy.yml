@@ -1,7 +1,7 @@
 name: Deploy Sacred Relayer to VPS
 on:
   push:
-    branches: [ add-discord, dev, master ]
+    branches: [ dev, master ]
 
 env: 
   ECR_REPOSITORY: sacred-relay
