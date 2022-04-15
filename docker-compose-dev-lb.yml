@@ -15,6 +15,8 @@ services:
       ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
       # without 0x prefix
       PRIVATE_KEY: ${MAINNET_PK}
+      AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+      AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
       # 2.5 means 2.5%
       RELAYER_FEE: 0.01
       REDIS_URL: redis://redis/0
@@ -49,6 +51,8 @@ services:
       ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
       # without 0x prefix
       PRIVATE_KEY: ${KOVAN_PK}
+      AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+      AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
       # 2.5 means 2.5%
       RELAYER_FEE: 0.01
       REDIS_URL: redis://redis/0
@@ -83,6 +87,8 @@ services:
       ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
       # without 0x prefix
       PRIVATE_KEY: ${RINKEBY_PK}
+      AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+      AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
       # 2.5 means 2.5%
       RELAYER_FEE: 0.01
       REDIS_URL: redis://redis/1
@@ -117,6 +123,8 @@ services:
       ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
       # without 0x prefix
       PRIVATE_KEY: ${MUMBAI_TESTNET_PK}
+      AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+      AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
       # 2.5 means 2.5%
       RELAYER_FEE: 0.01
       REDIS_URL: redis://redis/2
@@ -138,22 +146,23 @@ services:
         awslogs-create-group: true
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
 
-  # mainnet:
+ # polygon_mainnet:
   #   image: ${RELAY_IMAGE}
   #   restart: always
   #   environment:
-  #     VIRTUAL_HOST: mainnet.localhost
-  #     SELF_SIGNED_HOST: mainnet.localhost
-  #     LETSENCRYPT_HOST: mainnet.localhost
-  #     NET_ID: 1
-  #     RPC_URL: https://eth.alchemyapi.io/v2/${ALCHEMY_KEY}
+  #     VIRTUAL_HOST: polygon.localhost
+  #     LETSENCRYPT_HOST: polygon.localhost
+  #     NET_ID: 80001
+  #     RPC_URL: https://polygon.g.alchemyapi.io/v2/${ALCHEMY_KEY}
   #     # ORACLE_RPC_URL should always point to the mainnet
-  #     ORACLE_RPC_URL: https://eth.alchemyapi.io/v2/${ALCHEMY_KEY}
+  #     ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
   #     # without 0x prefix
-  #     PRIVATE_KEY: ${MAINNET_PK}
+  #     PRIVATE_KEY: ${POLYGON_PK}
+  #     AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+  #     AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
   #     # 2.5 means 2.5%
   #     RELAYER_FEE: 0.01
-  #     REDIS_URL: redis://redis/2
+  #     REDIS_URL: redis://redis/3
   #     TIMEOUT: 15000
   #     nginx_proxy_read_timeout: 600
   #     APP_PORT: 8000

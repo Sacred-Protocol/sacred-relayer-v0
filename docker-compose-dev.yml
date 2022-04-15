@@ -13,6 +13,8 @@ services:
       ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
       # without 0x prefix
       PRIVATE_KEY: ${MAINNET_PK}
+      AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+      AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
       # 2.5 means 2.5%
       RELAYER_FEE: 0.01
       REDIS_URL: redis://redis/3
@@ -47,6 +49,8 @@ services:
       ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
       # without 0x prefix
       PRIVATE_KEY: ${KOVAN_PK}
+      AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+      AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
       # 2.5 means 2.5%
       RELAYER_FEE: 0.01
       REDIS_URL: redis://redis/0
@@ -80,6 +84,8 @@ services:
       ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
       # without 0x prefix
       PRIVATE_KEY: ${RINKEBY_PK}
+      AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+      AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
       # 2.5 means 2.5%
       RELAYER_FEE: 0.01
       REDIS_URL: redis://redis/1
@@ -113,6 +119,8 @@ services:
       ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
       # without 0x prefix
       PRIVATE_KEY: ${MUMBAI_PK}
+      AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+      AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
       # 2.5 means 2.5%
       RELAYER_FEE: 0.01
       REDIS_URL: redis://redis/2
@@ -134,7 +142,6 @@ services:
         awslogs-create-group: true
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
 
-
   # polygon_mainnet:
   #   image: ${RELAY_IMAGE}
   #   restart: always
@@ -147,6 +154,8 @@ services:
   #     ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
   #     # without 0x prefix
   #     PRIVATE_KEY: ${POLYGON_PK}
+  #     AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+  #     AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
   #     # 2.5 means 2.5%
   #     RELAYER_FEE: 0.01
   #     REDIS_URL: redis://redis/3
@@ -219,6 +228,9 @@ services:
     image: redis
     restart: always
     command: [redis-server, --appendonly, 'yes', '--port', '6379']
+    environment: 
+      AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+      AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
     ports:
       - 6379:6379
     volumes:
@@ -244,6 +256,9 @@ services:
       - vhost:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
       - certs:/etc/nginx/certs
+    environment: 
+      AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+      AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
     logging:
       driver: awslogs
       options:
