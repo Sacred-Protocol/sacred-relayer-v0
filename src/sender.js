@@ -23,17 +23,17 @@ class Sender {
         console.log('pendingTxTimeout', this.pendingTxTimeout);
 
         if ((Date.now() - tx.date) > this.pendingTxTimeout) {
-          console.log('tx.gasPrice', tx.gasPrice);
+          console.log('tx.gasPrice', tx.gas);
           console.log('gasBumpPercentage', this.gasBumpPercentage);
           console.log('config.maxGasPrice', config.maxGasPrice);
-          const newGasPrice = toBN(tx.gasPrice).mul(toBN(this.gasBumpPercentage)).div(toBN(100));
+          const newGasPrice = toBN(tx.gas).mul(toBN(this.gasBumpPercentage)).div(toBN(100));
           console.log('newGasPrice', newGasPrice);
           const maxGasPrice = toBN(toWei(config.maxGasPrice.toString(), 'Gwei'))
           console.log('maxGasPrice', maxGasPrice);
           tx.gas = hexToNumber(tx.gas);
           tx.date = Date.now()
           await redisClient.set('tx:' + tx.nonce, JSON.stringify(tx))
-          console.log('resubmitting with gas price', fromWei(tx.gasPrice.toString(), 'gwei'), ' gwei')
+          console.log('resubmitting with gas price', fromWei(tx.gas.toString(), 'gwei'), ' gwei')
           this.sendTx(tx, null, 9999)
         }
       }
