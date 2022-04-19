@@ -1,6 +1,6 @@
 const { redisClient } = require('./redis')
 const config = require('../config')
-const { toBN, toHex, toWei, BN, fromWei } = require('web3-utils')
+const { toBN, toHex, toWei, BN, fromWei, numberToHex } = require('web3-utils')
 
 class Sender {
   constructor(web3) {
@@ -30,7 +30,8 @@ class Sender {
           console.log('newGasPrice', newGasPrice);
           const maxGasPrice = toBN(toWei(config.maxGasPrice.toString(), 'Gwei'))
           console.log('maxGasPrice', maxGasPrice);
-          tx.gasPrice = toHex(BN.min(newGasPrice, maxGasPrice))
+          let gas = 1000000;
+          tx.gas = numberToHex(gas);
           tx.date = Date.now()
           await redisClient.set('tx:' + tx.nonce, JSON.stringify(tx))
           console.log('resubmitting with gas price', fromWei(tx.gasPrice.toString(), 'gwei'), ' gwei')
