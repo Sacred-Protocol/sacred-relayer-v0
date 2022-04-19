@@ -1,6 +1,6 @@
 const { redisClient } = require('./redis')
 const config = require('../config')
-const { toBN, toHex, toWei, BN, fromWei, numberToHex } = require('web3-utils')
+const { toBN, toHex, toWei, BN, fromWei } = require('web3-utils')
 
 class Sender {
   constructor(web3) {
@@ -23,15 +23,14 @@ class Sender {
         console.log('pendingTxTimeout', this.pendingTxTimeout);
 
         if ((Date.now() - tx.date) > this.pendingTxTimeout) {
-          console.log('tx.gasPrice', tx.gas);
+          console.log('tx.gasPrice', tx.gasPrice);
           console.log('gasBumpPercentage', this.gasBumpPercentage);
           console.log('config.maxGasPrice', config.maxGasPrice);
-          const newGasPrice = toBN(tx.gas).mul(toBN(this.gasBumpPercentage)).div(toBN(100));
+          const newGasPrice = toBN(tx.gasPrice).mul(toBN(this.gasBumpPercentage)).div(toBN(100));
           console.log('newGasPrice', newGasPrice);
           const maxGasPrice = toBN(toWei(config.maxGasPrice.toString(), 'Gwei'))
           console.log('maxGasPrice', maxGasPrice);
-          let gas = 1000000;
-          tx.gas = numberToHex(gas);
+          tx.gasPrice = toHex(BN.min(newGasPrice, maxGasPrice))
           tx.date = Date.now()
           await redisClient.set('tx:' + tx.nonce, JSON.stringify(tx))
           console.log('resubmitting with gas price', fromWei(tx.gasPrice.toString(), 'gwei'), ' gwei')
