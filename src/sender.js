@@ -15,11 +15,20 @@ class Sender {
     try {
       const networkNonce = await this.web3.eth.getTransactionCount(this.web3.eth.defaultAccount)
       let tx = await redisClient.get('tx:' + networkNonce)
+      console.log('networkNonce', networkNonce);
       if (tx) {
         tx = JSON.parse(tx)
-        if (Date.now() - tx.date > this.pendingTxTimeout) {
-          const newGasPrice = toBN(tx.gasPrice).mul(toBN(this.gasBumpPercentage)).div(toBN(100))
+        console.log('txDate', tx.date);
+        console.log('pendingTxTimeout', this.pendingTxTimeout);
+
+        if ((Date.now() - tx.date) > this.pendingTxTimeout) {
+          console.log('tx.gasPrice', tx.gasPrice);
+          console.log('gasBumpPercentage', this.gasBumpPercentage);
+          console.log('config.maxGasPrice', config.maxGasPrice);
+          const newGasPrice = toBN(tx.gasPrice).mul(toBN(this.gasBumpPercentage)).div(toBN(100));
+          console.log('newGasPrice', newGasPrice);
           const maxGasPrice = toBN(toWei(config.maxGasPrice.toString(), 'Gwei'))
+          console.log('maxGasPrice', maxGasPrice);
           tx.gasPrice = toHex(BN.min(newGasPrice, maxGasPrice))
           tx.date = Date.now()
           await redisClient.set('tx:' + tx.nonce, JSON.stringify(tx))
