@@ -14,7 +14,8 @@ class Sender {
   async watcher() {
     try {
       const networkNonce = await this.web3.eth.getTransactionCount(this.web3.eth.defaultAccount)
-      let tx = await redisClient.get('tx:' + networkNonce)
+      let tx = await redisClient.get('tx:' + networkNonce);
+      console.log('tx', tx);
       console.log('networkNonce', networkNonce);
       if (tx) {
         tx = JSON.parse(tx)
