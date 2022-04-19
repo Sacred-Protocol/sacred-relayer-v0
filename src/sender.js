@@ -23,10 +23,10 @@ class Sender {
         console.log('pendingTxTimeout', this.pendingTxTimeout);
 
         if ((Date.now() - tx.date) > this.pendingTxTimeout) {
-          console.log('tx.gasPrice', tx.gasPrice);
+          console.log('tx.gasPrice', tx.gas);
           console.log('gasBumpPercentage', this.gasBumpPercentage);
           console.log('config.maxGasPrice', config.maxGasPrice);
-          const newGasPrice = toBN(tx.gasPrice).mul(toBN(this.gasBumpPercentage)).div(toBN(100));
+          const newGasPrice = toBN(tx.gas).mul(toBN(this.gasBumpPercentage)).div(toBN(100));
           console.log('newGasPrice', newGasPrice);
           const maxGasPrice = toBN(toWei(config.maxGasPrice.toString(), 'Gwei'))
           console.log('maxGasPrice', maxGasPrice);
