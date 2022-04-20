@@ -5,7 +5,7 @@ const { isValidProof, isValidArgs, isKnownContract, isEnoughFee, fetchGasPriceFr
 const config = require('../config')
 const { redisClient, redisOpts } = require('./redis')
 
-const { web3, fetcher, sender } = require('./instances');
+const { web3, fetcher, sender, gasPriceOracle } = require('./instances');
 const withdrawQueue = new Queue('withdraw', redisOpts)
 
 const reponseCbs = {}
@@ -78,7 +78,7 @@ async function relayController(req, resp) {
 withdrawQueue.process(async function (job, done) {
   console.log(Date.now(), ' withdraw started', job.id)
 
-  var gasPrices = await fetchGasPriceFromRpc();
+  const gasPrices = await gasPriceOracle.gasPrices();
 
   const { contract, nullifierHash, root, proof, args, refund, currency, amount, fee } = job.data
   console.log(JSON.stringify(job.data))
@@ -114,7 +114,7 @@ withdrawQueue.process(async function (job, done) {
     // })
 
     // Average estimated gas burned for a withdrawal
-    let gas = 1000000
+    let gas = 800000;
     // gas += 50000
     const ethPrices = fetcher.ethPrices;
     const { isEnough, reason } = isEnoughFee({

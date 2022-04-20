@@ -15,6 +15,7 @@
     "bull": "^3.12.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "gas-price-oracle": "^0.4.6",
     "ioredis": "^4.14.1",
     "node-fetch": "^2.6.0",
     "redis-server": "^1.2.2",

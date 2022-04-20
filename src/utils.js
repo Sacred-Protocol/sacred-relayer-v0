@@ -121,7 +121,7 @@ function isEnoughFee({ gas, gasPrices, currency, amount, refund, ethPrices, fee 
   const feePercent = toBN(fromDecimals(amount, decimals))
     .mul(toBN(relayerServiceFee * roundDecimal))
     .div(toBN(roundDecimal * 100))
-  const expense = toBN(toWei(gasPrices.fast.toString(), 'gwei')).mul(toBN(gas))
+  const expense = toBN(toWei(gasPrices.fast.toString(), 'gwei'));
   let desiredFee
   switch (currency) {
     case 'eth': {
@@ -156,7 +156,7 @@ function isEnoughFee({ gas, gasPrices, currency, amount, refund, ethPrices, fee 
 }
 
 function getArgsForOracle() {
-  const tokens = mixers['netId1']
+  const tokens = mixers[`netId${netId}`]
   const tokenAddresses = []
   const oneUintAmount = []
   const currencyLookup = {}
