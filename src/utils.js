@@ -188,12 +188,12 @@ function normalize(_gas) {
 }
 
 function categorize(gasPrice) {
-  return normalize({
+  return {
     instant: gasPrice * 1.3,
     fast: gasPrice,
     standard: gasPrice * 0.85,
     low: gasPrice * 0.5,
-  });
+  };
 }
 
 
@@ -213,8 +213,8 @@ async function fetchGasPriceFromRpc() {
       if (fastGasPrice.isZero()) {
         throw new Error(`Default RPC provides corrupted values`);
       }
-      fastGasPrice = fastGasPrice.div(toBN(1e9));
-      return categorize(fastGasPrice.toNumber());
+      fastGasPrice = result / 1e9;
+      return categorize(fastGasPrice);
     }
 
     throw new Error(`Fetch gasPrice from default RPC failed..`);
