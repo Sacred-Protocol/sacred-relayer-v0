@@ -114,7 +114,7 @@ withdrawQueue.process(async function (job, done) {
     // })
 
     // Average estimated gas burned for a withdrawal
-    let gas = 1000000
+    let gas = 400000;
     // gas += 50000
     const ethPrices = fetcher.ethPrices;
     const { isEnough, reason } = isEnoughFee({
