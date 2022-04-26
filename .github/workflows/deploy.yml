@@ -1,0 +1,106 @@
+name: Deploy Sacred Relayer to VPS
+on:
+  push:
+    branches: [ dev, master ]
+
+env: 
+  ECR_REPOSITORY: sacred-relay
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: checkout latest
+        uses: actions/checkout@v2 
+
+      - name: Set Environment
+        id: set-env
+        run: |
+          if [[ $GITHUB_REF == 'refs/heads/master' ]]; then
+            echo "::set-output name=AWS_REGION::${{ secrets.AWS_REGION_PROD }}"
+            echo "::set-output name=HOSTS::${{ secrets.HOSTS_PROD }}"
+            echo "::set-output name=KOVAN_PK::${{ secrets.KOVAN_PK_PROD }}"
+            echo "::set-output name=MAINNET_PK::${{ secrets.MAINNET_PK_PROD }}"
+            echo "::set-output name=RINKEBY_PK::${{ secrets.RINKEBY_PK_PROD }}"
+            echo "::set-output name=MUMBAI_PK::${{ secrets.MUMBAI_PK_PROD }}"
+            echo "::set-output name=MUMBAI_PK::${{ secrets.POLYGON_PK_PROD }}"
+            echo "::set-output name=ALCHEMY_KEY::${{ secrets.ALCHEMY_KEY_PROD }}"
+            echo "::set-output name=DISCORD_WEBHOOK::${{ secrets.DISCORD_WEBHOOK_PROD }}"
+            echo "::set-output name=DOCKER_COMPOSE_FILE::docker-compose-prod.yml"
+          else
+            echo "::set-output name=AWS_REGION::${{ secrets.AWS_REGION_DEV }}"
+            echo "::set-output name=HOSTS::${{ secrets.HOSTS_DEV }}"
+            echo "::set-output name=KOVAN_PK::${{ secrets.KOVAN_PK_DEV }}"
+            echo "::set-output name=MAINNET_PK::${{ secrets.MAINNET_PK_DEV }}"
+            echo "::set-output name=RINKEBY_PK::${{ secrets.RINKEBY_PK_DEV }}"
+            echo "::set-output name=MUMBAI_PK::${{ secrets.MUMBAI_PK_DEV }}"
+            echo "::set-output name=MUMBAI_PK::${{ secrets.POLYGON_PK_DEV }}"
+            echo "::set-output name=ALCHEMY_KEY::${{ secrets.ALCHEMY_KEY_DEV }}"
+            echo "::set-output name=DISCORD_WEBHOOK::${{ secrets.DISCORD_WEBHOOK_DEV }}"
+            echo "::set-output name=DOCKER_COMPOSE_FILE::docker-compose-dev.yml"
+          fi
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@13d241b293754004c80624b5567555c4a39ffbe3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ steps.set-env.outputs.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@aaf69d68aa3fb14c1d5a6be9ac61fe15b48453a2
+
+      - name: Build images
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Update Deploy File
+        uses: appleboy/scp-action@master
+        with:
+          key: ${{ secrets.AWS_PK  }}
+          host: ${{ steps.set-env.outputs.HOSTS }}
+          username: ${{ secrets.AWS_USER }}
+          source: "${{ steps.set-env.outputs.DOCKER_COMPOSE_FILE }}"
+          target: "relay-deploy"
+
+      - name: Set Env and Redeploy
+        uses: appleboy/ssh-action@master
+        with:
+          key: ${{ secrets.AWS_PK }}
+          host: ${{ steps.set-env.outputs.HOSTS }}
+          username: ${{ secrets.AWS_USER }}
+          script: |
+            export KOVAN_PK=${{ steps.set-env.outputs.KOVAN_PK }}
+            export RINKEBY_PK=${{ steps.set-env.outputs.RINKEBY_PK }}
+            export MAINNET_PK=${{ steps.set-env.outputs.MAINNET_PK }}
+            export MUMBAI_PK=${{ steps.set-env.outputs.MUMBAI_PK }}
+            export POLYGON_PK=${{ steps.set-env.outputs.POLYGON_PK }}
+            export ALCHEMY_KEY=${{ steps.set-env.outputs.ALCHEMY_KEY }}
+            export AWS_REGION=${{ steps.set-env.outputs.AWS_REGION }}
+            export AWS_ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
+            export AWS_LOGGER_ACCESS_KEY_ID=${{ secrets.AWS_LOGGER_ACCESS_KEY_ID }}
+            export AWS_LOGGER_SECRET_ACCESS_KEY=${{ secrets.AWS_LOGGER_SECRET_ACCESS_KEY }}
+            export RELAY_IMAGE=${{ steps.build-image.outputs.image }}
+            aws configure set region $AWS_REGION
+            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+            docker compose -f relay-deploy/${{ steps.set-env.outputs.DOCKER_COMPOSE_FILE }} up -d
+            docker image prune -af
+
+      - name: Notify
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ steps.set-env.outputs.DISCORD_WEBHOOK }}
+          title: "${{ github.workflow }}"
+          description: "Sacred Relay V0 deploy ${{ job.status }}\n\nImage `${{ steps.build-image.outputs.image }}`\n\nLogs available here: https://us-east-2.console.aws.amazon.com/cloudwatch/home?region=us-east-2#logsV2:log-groups/log-group/sacred-relay-v0-dev"
+          

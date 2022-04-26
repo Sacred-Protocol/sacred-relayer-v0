@@ -11,26 +11,48 @@ module.exports = {
     netId1: {
       eth: {
         mixerAddress: {
-          '0.1': '0x0',
-          '1': '0x0',
-          '10': '0x0',
-          '100': '0x0'
+          0.1: "0x69ADD7A9a222447e857ac3926F7B87dD0868A13c",
+          1: "0x5F7b0bC185eF688D15ab0bD0320DD7C0D7A567Cc",
         },
         symbol: 'ETH',
         decimals: 18
       },
     },
-    netId42: {
+    netId4: {
       eth: {
         mixerAddress: {
-          '0.1': '0xf43D169bd8feCc36344a08669620FB29490E677c',
-          '1': '0x045A42f9396Dfb3798f8F75C3F8625738dC3b041',
-          '10': '0x075a48b34C2e4665B1F7C2ED118E55337ed0067E',
-          '100': '0x90c4758c345172a665CAc7C41180fc4D46ce6079'
+          0.1: "0x21A85A1F70Cf0EDC3ee4B91d479011deef2193F1",
+          1: "0x2132986d56F4737920d11fCec3dCAa0e9AbE6EC9",
+          10: "0x6D6Ec1443fEe828A64DaD87B28195B2661c846E8",
+          100: "0x73b39BEBdfAf0bbD19bAA1a0aFE26AF9BA54c2Ea"
         },
         symbol: 'ETH',
         decimals: 18
-      },
+      }
+    },
+    netId42: {
+      eth: {
+        mixerAddress: {
+          0.1: "0x21A85A1F70Cf0EDC3ee4B91d479011deef2193F1",
+          1: "0x2132986d56F4737920d11fCec3dCAa0e9AbE6EC9",
+          10: "0x6D6Ec1443fEe828A64DaD87B28195B2661c846E8",
+          100: "0x73b39BEBdfAf0bbD19bAA1a0aFE26AF9BA54c2Ea"
+        },
+        symbol: 'ETH',
+        decimals: 18
+      }
+    },
+    netId80001: {
+      matic: {
+        mixerAddress: {
+          0.1: "0x21A85A1F70Cf0EDC3ee4B91d479011deef2193F1",
+          1: "0x2132986d56F4737920d11fCec3dCAa0e9AbE6EC9",
+          10: "0x6D6Ec1443fEe828A64DaD87B28195B2661c846E8",
+          100: "0x73b39BEBdfAf0bbD19bAA1a0aFE26AF9BA54c2Ea"
+        },
+        symbol: 'MATIC',
+        decimals: 18
+      }
     }
   },
   defaultGasPrice: 20,
