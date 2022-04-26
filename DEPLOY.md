@@ -82,13 +82,16 @@ For a load balancing service such as Cloudflare, AWS load balancers, etc that ne
 
 ## VPS Configuration
 
-- Use the image https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#ImageDetails:imageId=ami-09c44327ce02a2a6f and `Launch Instance from image`
+- Add an elastic IP if using with domains
+- Create a VPS
+  - Use the image https://us-east-2.console.aws.amazon.com/ec2/v2/home?region=us-east-2#ImageDetails:imageId=ami-09c44327ce02a2a6f 
+  - Select `Launch Instance from image`
 
-or 
+  or
 
 - Create VPS on Ubuntu 20.04 (or latest LTS)
 
-- Install Docker
+  - Install Docker
 
         sudo apt update
         sudo apt install apt-transport-https ca-certificates curl unzip software-properties-common
@@ -97,40 +100,43 @@ or
         sudo apt install docker-ce
         sudo usermod -aG docker ${USER}
 
-- Install docker-compose cli
+  - Install docker-compose cli
 
         mkdir -p ~/.docker/cli-plugins/
         curl -SL https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
         chmod +x ~/.docker/cli-plugins/docker-compose
         sudo chown $USER /var/run/docker.sock
 
-- Create SSH key locally
+  - Create SSH key locally
 
         ssh-keygen -t ed25519 -C "dev@sacred.finance"
 
-- Append the public key to ~/.ssh/authorized_keys on the VPS
+  - Append the public key to ~/.ssh/authorized_keys on the VPS
 
-- Add the private key to Github settings in the repository
+  - Add the private key to Github settings in the repository
 
-- Install the aws cli
+  - Install the aws cli
 
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
         unzip awscliv2.zip
         sudo ./aws/install
 
-- create/root/.aws/credentials
+  - create/root/.aws/credentials
 
-- credentials format
+  - credentials format
 
         [sacred]
                 aws_access_key_id= 
                 aws_secret_access_key= 
-- restrict access to creds
+
+  - restrict access to creds
 
         sudo chmod 0400 /root/.aws/credentials
 
-- install aws cloudwatch agent
+  - install aws cloudwatch agent
 
         sudo apt-get -y install python2.7
         curl https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py -O
         python2.7 ./awslogs-agent-setup.py --region us-east-2
+
+- Add the `sacred-ec2-logger` IAM role to the VPS
