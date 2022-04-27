@@ -1,7 +1,7 @@
 const Queue = require('bull')
 const { numberToHex, toWei, toHex, toBN, toChecksumAddress } = require('web3-utils')
 const mixerABI = require('../abis/mixerABI.json')
-const { isValidProof, isValidArgs, isKnownContract, isEnoughFee, fetchGasPriceFromRpc } = require('./utils')
+const { isValidProof, isValidArgs, isKnownContract, isEnoughFee, fetchGasPriceFromRpc, fetchMaxPriorityFeePerGasFromRpc } = require('./utils')
 const config = require('../config')
 const { redisClient, redisOpts } = require('./redis')
 
@@ -115,9 +115,11 @@ withdrawQueue.process(async function (job, done) {
 
     // Average estimated gas burned for a withdrawal
     let gas = 400000;
+    const maxPriorityFeePerGas = await fetchMaxPriorityFeePerGasFromRpc();
     // gas += 50000
     const ethPrices = fetcher.ethPrices;
     const { isEnough, reason } = isEnoughFee({
+      maxPriorityFeePerGas,
       gas,
       gasPrices,
       currency,
@@ -143,7 +145,7 @@ withdrawQueue.process(async function (job, done) {
       value: numberToHex(refund),
       gas: numberToHex(gas),
       // maxFeePerGas: '0xb2d05e00',
-      maxPriorityFeePerGas: '0x9502F900',
+      maxPriorityFeePerGas,
       to: mixer._address,
       netId: config.netId,
       data,
