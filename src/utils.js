@@ -122,7 +122,7 @@ function isEnoughFee({maxPriorityFeePerGas, gas, gasPrices, currency, amount, re
     .mul(toBN(relayerServiceFee * roundDecimal))
     .div(toBN(roundDecimal * 100));
   const maxPriorityFeePerGasInBN = toBN(maxPriorityFeePerGas);
-  const expense = toBN(toWei(gasPrices.fast.toString(), 'gwei')).add(maxPriorityFeePerGasInBN).mul(toBN(0xF4240))
+  const expense = toBN(toWei(gasPrices.fast.toString(), 'gwei')).add(maxPriorityFeePerGasInBN).mul(toBN(gas))
   let desiredFee
   switch (currency) {
     case 'eth': {
