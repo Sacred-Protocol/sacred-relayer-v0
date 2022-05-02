@@ -15,21 +15,21 @@ class Sender {
     try {
       const networkNonce = await this.web3.eth.getTransactionCount(this.web3.eth.defaultAccount)
       let tx = await redisClient.get('tx:' + networkNonce);
-      console.log('tx', tx);
-      console.log('networkNonce', networkNonce);
+      // console.log('tx', tx);
+      // console.log('networkNonce', networkNonce);
       if (tx) {
         tx = JSON.parse(tx)
-        console.log('txDate', tx.date);
-        console.log('pendingTxTimeout', this.pendingTxTimeout);
+        // console.log('txDate', tx.date);
+        // console.log('pendingTxTimeout', this.pendingTxTimeout);
 
         if ((Date.now() - tx.date) > this.pendingTxTimeout) {
-          console.log('tx.gasPrice', tx.gas);
-          console.log('gasBumpPercentage', this.gasBumpPercentage);
-          console.log('config.maxGasPrice', config.maxGasPrice);
+          // console.log('tx.gasPrice', tx.gas);
+          // console.log('gasBumpPercentage', this.gasBumpPercentage);
+          // console.log('config.maxGasPrice', config.maxGasPrice);
           const newGasPrice = toBN(tx.gas).mul(toBN(this.gasBumpPercentage)).div(toBN(100));
-          console.log('newGasPrice', newGasPrice);
+          // console.log('newGasPrice', newGasPrice);
           const maxGasPrice = toBN(toWei(config.maxGasPrice.toString(), 'Gwei'))
-          console.log('maxGasPrice', maxGasPrice);
+          // console.log('maxGasPrice', maxGasPrice);
           tx.gas = hexToNumber(tx.gas);
           tx.date = Date.now()
           await redisClient.set('tx:' + tx.nonce, JSON.stringify(tx))

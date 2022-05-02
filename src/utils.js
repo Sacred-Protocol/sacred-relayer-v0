@@ -110,7 +110,7 @@ function fromDecimals(value, decimals) {
   return new BN(wei.toString(10), 10)
 }
 
-function isEnoughFee({ gas, gasPrices, currency, amount, refund, ethPrices, fee }) {
+function isEnoughFee({maxPriorityFeePerGas, gas, gasPrices, currency, amount, refund, ethPrices, fee }) {
   const { decimals } = mixers[`netId${netId}`][currency]
   const decimalsPoint =
     Math.floor(relayerServiceFee) === relayerServiceFee
@@ -120,8 +120,9 @@ function isEnoughFee({ gas, gasPrices, currency, amount, refund, ethPrices, fee 
   const roundDecimal = 10 ** decimalsPoint
   const feePercent = toBN(fromDecimals(amount, decimals))
     .mul(toBN(relayerServiceFee * roundDecimal))
-    .div(toBN(roundDecimal * 100))
-  const expense = toBN(toWei(gasPrices.fast.toString(), 'gwei')).mul(toBN(gas))
+    .div(toBN(roundDecimal * 100));
+  const maxPriorityFeePerGasInBN = toBN(maxPriorityFeePerGas);
+  const expense = toBN(toWei(gasPrices.fast.toString(), 'gwei')).add(maxPriorityFeePerGasInBN).mul(toBN(gas))
   let desiredFee
   switch (currency) {
     case 'eth': {
@@ -224,6 +225,28 @@ async function fetchGasPriceFromRpc() {
   }
 }
 
+async function fetchMaxPriorityFeePerGasFromRpc() {
+  const rpcUrl = process.env.RPC_URL;
+  const body = {
+    jsonrpc: '2.0',
+    id: 1,
+    method: 'eth_maxPriorityFeePerGas',
+    params: [],
+  };
+  try {
+    const response = await axios.post(rpcUrl, body, { timeout: process.env.TIMEOUT });
+    if (response.status === 200) {
+      const { result } = response.data;
+      return result;
+    }
+
+    throw new Error(`eth_maxPriorityFeePerGas from default RPC failed..`);
+  } catch (e) {
+    console.error(e.message);
+    throw new Error('Default RPC is down. Probably a network error.');
+  }
+}
+
 module.exports = {
   isValidProof,
   isValidArgs,
@@ -232,5 +255,6 @@ module.exports = {
   isEnoughFee,
   getMixers,
   getArgsForOracle,
-  fetchGasPriceFromRpc
+  fetchGasPriceFromRpc,
+  fetchMaxPriorityFeePerGasFromRpc
 }
