@@ -14,7 +14,10 @@ The `certs` folder is used for the proxy-companion setup when using the `-dev-lb
 
 ## Environment
 
-Required Environment Variables. These have (_PROD | _DEV) versions e.g. KOVAN_PK_DEV and KOVAN_PK_PROD. These are written to the VPS environment on deploy and are then available to the instances started by docker compose.
+Configuration and Secrets are stored in github build environments (development/production) for deploy. 
+These are written to the VPS environment on deploy and are then available to the instances started by docker compose.
+
+**Environment Secrets**
 
 - KOVAN_PK
 - RINKEBY_PK
@@ -26,21 +29,21 @@ Required Environment Variables. These have (_PROD | _DEV) versions e.g. KOVAN_PK
 - {othernetwork}_URL (these will come as needed)
 - ALCHEMY_KEY
 - AWS_REGION
-- HOSTS
-- ECR_REPOSITORY
+- AWS_LOGS_REGION
+- AWS_LOGS_GROUP
 - DISCORD_WEBHOOK
-- DOCKER_COMPOSE_FILE
-- LOGS_URL
+- AWS_PK (ssh key)
+- AWS_USER (ssh user)
+- HOSTS
 
-Github Specific
+**Repository Secrets**
 
 - AWS_ACCOUNT_ID
 - AWS_ACCESS_KEY_ID
 - AWS_SECRET_ACCESS_KEY
 - AWS_LOGGER_ACCESS_KEY_ID
 - AWS_LOGGER_SECRET_ACCESS_KEY
-- AWS_PK (ssh key)
-- AWS_USER (ssh user)
+- ECR_REPOSITORY
 
 ## Deploy 
 

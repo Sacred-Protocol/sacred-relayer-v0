@@ -64,7 +64,7 @@ jobs:
         uses: appleboy/scp-action@master
         with:
           key: ${{ secrets.AWS_PK  }}
-          host: ${{ steps.set-env.outputs.HOSTS }}
+          host: ${{ secrets.HOSTS }}
           username: ${{ secrets.AWS_USER }}
           source: "docker-compose-aws.yml"
           target: "relay-deploy"
@@ -73,7 +73,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           key: ${{ secrets.AWS_PK }}
-          host: ${{ steps.set-env.outputs.HOSTS }}
+          host: ${{ secrets.HOSTS }}
           username: ${{ secrets.AWS_USER }}
           script: |
             export KOVAN_PK=${{ secrets.KOVAN_PK }}
