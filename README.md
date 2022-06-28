@@ -1,8 +1,10 @@
-# Relayer for Tornado Cash [![Build Status](https://github.com/tornadocash/relayer/workflows/build/badge.svg)](https://github.com/tornadocash/relayer/actions) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/tornadocash/relayer?logo=docker&logoColor=%23FFFFFF&sort=semver)](https://hub.docker.com/repository/docker/tornadocash/relayer)
+# Sacred Relayer
+
+Based on Tornado Cash [![Build Status](https://github.com/tornadocash/relayer/workflows/build/badge.svg)](https://github.com/tornadocash/relayer/actions) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/tornadocash/relayer?logo=docker&logoColor=%23FFFFFF&sort=semver)](https://hub.docker.com/repository/docker/tornadocash/relayer)
 
 ## Data collection
 
-Information we collect includes: 
+Information the relay collects includes: 
 - ip address
 - browser details (type, engine etc)
 
@@ -38,44 +40,9 @@ Hostname/IP does not match certificate's altnames: Host: polygon-mumbai.g.alchem
 (node:21) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 4)
 ```
 
-## Run locally
+## Deploy
 
-1. `npm i`
-2. `cp .env.example .env`
-3. Modify `.env` as needed
-4. `npm run start`
-5. Go to `http://127.0.0.1:8000`
-6. In order to execute withdraw request, you can run following command
-
-```bash
-curl -X POST -H 'content-type:application/json' --data '<input data>' http://127.0.0.1:8000/relay
-```
-
-Relayer should return a transaction hash.
-
-_Note._ If you want to change contracts' addresses go to [config.js](./config.js) file.
-
-## Deploy with docker-compose
-
-docker-compose.yml contains a stack that will automatically provision SSL certificates for your domain name and will add a https redirect to port 80.
-
-1. Download docker-compose.yml
-2. Change environment variables for `kovan` containers as appropriate
-   - add `PRIVATE_KEY` for your relayer address (without 0x prefix)
-   - set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` to your domain and add DNS record pointing to your relayer ip address
-   - customize `RELAYER_FEE`
-   - update `RPC_URL` if needed
-   - update `REDIS_URL` if needed
-3. Run `docker-compose up -d`
-
-## Run as a Docker container
-
-1. `cp .env.example .env`
-2. Modify `.env` as needed
-3. `docker run -d --env-file .env -p 80:8000 tornadocash/relayer`
-
-In that case you will need to add https termination yourself because browsers with default settings will prevent https
-tornado.cash UI from submitting your request over http connection
+See DEPLOY.md
 
 ## Input data example
 
