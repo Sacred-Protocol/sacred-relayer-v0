@@ -6,6 +6,8 @@ This is based off the Tornado cash relay deploy.
 
 docker-compose is used to keep the deployment consistent across environments. The service is deployed to an existing EC2 instance (currently on AWS) via SSH. 
 
+[Github actions](.github/workflows/deploy.yml) will deploy to your env (assuming it is configured) and will run on commit to `master` and `dev` branches.
+
 The `docker-compose-*.yml` files contain the deployment configurations. It builds services for each network, a redis instance for the environment, and provides an HTTPS terminated NGINX proxy using LetsEncrypt or Self signed certificates.
 
 For v0 Secrets are stored in github build environment and written to the VPS environment on deploy
