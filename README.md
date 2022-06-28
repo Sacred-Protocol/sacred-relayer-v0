@@ -42,7 +42,26 @@ Hostname/IP does not match certificate's altnames: Host: polygon-mumbai.g.alchem
 
 ## Deploy
 
-See DEPLOY.md
+### Local
+
+1. `npm i`
+2. `cp .env.example .env`
+3. Modify `.env` as needed
+4. `npm run start`
+5. Go to `http://127.0.0.1:8000`
+6. In order to execute withdraw request, you can run following command
+
+```bash
+curl -X POST -H 'content-type:application/json' --data '<input data>' http://127.0.0.1:8000/relay
+```
+
+Relayer should return a transaction hash.
+
+_Note._ If you want to change contracts' addresses go to [config.js](./config.js) file.
+
+## Deploy with docker-compose
+
+See the [deploy instructions](DEPLOY.md) for various environments (local, aws and load balanced)
 
 ## Input data example
 
