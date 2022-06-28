@@ -28,10 +28,10 @@ These are written to the VPS environment on deploy and are then available to the
 - MAINNET_URL
 - {othernetwork}_URL (these will come as needed)
 - ALCHEMY_KEY
+- DISCORD_WEBHOOK
 - AWS_REGION
 - AWS_LOGS_REGION
 - AWS_LOGS_GROUP
-- DISCORD_WEBHOOK
 - AWS_PK (ssh key)
 - AWS_USER (ssh user)
 - HOSTS
