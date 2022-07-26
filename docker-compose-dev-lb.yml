@@ -150,40 +150,41 @@ services:
         awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
 
- # polygon_mainnet:
-  #   image: ${RELAY_IMAGE}
-  #   restart: always
-  #   environment:
-  #     VIRTUAL_HOST: polygon.localhost
-  #     LETSENCRYPT_HOST: polygon.localhost
-  #     NET_ID: 80001
-  #     RPC_URL: https://polygon.g.alchemyapi.io/v2/${ALCHEMY_KEY}
-  #     # ORACLE_RPC_URL should always point to the mainnet
-  #     ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
-  #     # without 0x prefix
-  #     PRIVATE_KEY: ${POLYGON_PK}
-  #     AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
-  #     AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
-  #     # 2.5 means 2.5%
-  #     RELAYER_FEE: 0.01
-  #     REDIS_URL: redis://redis/3
-  #     TIMEOUT: 15000
-  #     nginx_proxy_read_timeout: 600
-  #     APP_PORT: 8000
-  #     NONCE_WATCHER_INTERVAL: 30
-  #     ALLOWABLE_PENDING_TX_TIMEOUT: 180
-  #     MAX_GAS_PRICE: 200
-  #     GAS_PRICE_BUMP_PERCENTAGE: 20
-  #   depends_on:
-  #     - redis
-  #   logging:
-  #     driver: awslogs
-  #       options:
-  #         awslogs-region: us-east-2
-  #         awslogs-group: sacred-relay-v0-dev
-  #         awslogs-stream: polygon
-  #         awslogs-create-group: "true"
-  #         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
+  polygon_mainnet:
+    image: ${RELAY_IMAGE}
+    restart: always
+    environment:
+      VIRTUAL_HOST: polygon.localhost
+      SELF_SIGNED_HOST: polygon.localhost
+      LETSENCRYPT_HOST: polygon.localhost
+      NET_ID: 137
+      RPC_URL: https://polygon.g.alchemyapi.io/v2/${ALCHEMY_KEY}
+      # ORACLE_RPC_URL should always point to the mainnet
+      ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
+      # without 0x prefix
+      PRIVATE_KEY: ${POLYGON_PK}
+      AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+      AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
+      # 2.5 means 2.5%
+      RELAYER_FEE: 0.01
+      REDIS_URL: redis://redis/3
+      TIMEOUT: 15000
+      nginx_proxy_read_timeout: 600
+      APP_PORT: 8000
+      NONCE_WATCHER_INTERVAL: 30
+      ALLOWABLE_PENDING_TX_TIMEOUT: 180
+      MAX_GAS_PRICE: 200
+      GAS_PRICE_BUMP_PERCENTAGE: 20
+    depends_on:
+      - redis
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: us-east-2
+        awslogs-group: sacred-relay-v0-dev
+        awslogs-stream: polygon
+        awslogs-create-group: "true"
+        awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
 
   #  # this container will proxy *.onion domain to the mainnet container
   #  tor:
