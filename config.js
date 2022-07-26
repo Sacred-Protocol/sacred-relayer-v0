@@ -18,6 +18,15 @@ module.exports = {
         decimals: 18
       },
     },
+    netId137: {
+      matic: {
+        mixerAddress: {
+          10: "0x2132986d56F4737920d11fCec3dCAa0e9AbE6EC9",
+        },
+        symbol: 'MATIC',
+        decimals: 18,
+      }
+    },
     netId4: {
       eth: {
         mixerAddress: {
