@@ -10,7 +10,7 @@ docker-compose is used to keep the deployment consistent across environments. Th
 
 The `docker-compose-*.yml` files contain the deployment configurations. It builds services for each network, a redis instance for the environment, and provides an HTTPS terminated NGINX proxy using LetsEncrypt or Self signed certificates.
 
-For v0 Secrets are stored in github build environment and written to the VPS environment on deploy
+For v0, secrets are stored in github build environment and written to the VPS environment on deploy
 
 The `certs` folder is used for the proxy-companion setup when using the `-dev-lb` and `-local`. These should not be used in production
 
