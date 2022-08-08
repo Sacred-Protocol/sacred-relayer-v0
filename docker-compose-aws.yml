@@ -5,8 +5,8 @@ services:
     image: ${RELAY_IMAGE}
     restart: always
     environment:
-      VIRTUAL_HOST: relay-v0.mainnet.dev.sacred.finance
-      LETSENCRYPT_HOST: relay-v0.mainnet.dev.sacred.finance
+      VIRTUAL_HOST: ${MAINNET_URL}
+      LETSENCRYPT_HOST: ${MAINNET_URL}
       NET_ID: 1
       RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
       # ORACLE_RPC_URL should always point to the mainnet
@@ -30,8 +30,9 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-region: us-east-2
-        awslogs-group: sacred-relay-v0-dev
+        options:
+        awslogs-region: ${AWS_LOGS_REGION}
+        awslogs-group: ${AWS_LOGS_GROUP}
         awslogs-stream: mainnet
         awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
@@ -41,8 +42,8 @@ services:
     image: ${RELAY_IMAGE}
     restart: always
     environment:
-      VIRTUAL_HOST: relay-v0.kovan.dev.sacred.finance
-      LETSENCRYPT_HOST: relay-v0.kovan.dev.sacred.finance
+      VIRTUAL_HOST: ${KOVAN_URL}
+      LETSENCRYPT_HOST: ${KOVAN_URL}
       NET_ID: 42
       RPC_URL: https://eth-kovan.alchemyapi.io/v2/${ALCHEMY_KEY}
       # ORACLE_RPC_URL should always point to the mainnet
@@ -66,8 +67,8 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-region: us-east-2
-        awslogs-group: sacred-relay-v0-dev
+        awslogs-region: ${AWS_LOGS_REGION}
+        awslogs-group: ${AWS_LOGS_GROUP}
         awslogs-stream: kovan
         awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
@@ -76,8 +77,8 @@ services:
     image: ${RELAY_IMAGE}
     restart: always
     environment:
-      VIRTUAL_HOST: relay-v0.rinkeby.dev.sacred.finance
-      LETSENCRYPT_HOST: relay-v0.rinkeby.dev.sacred.finance
+      VIRTUAL_HOST: ${RINKEBY_URL}
+      LETSENCRYPT_HOST: ${RINKEBY_URL}
       NET_ID: 4
       RPC_URL: https://eth-rinkeby.alchemyapi.io/v2/${ALCHEMY_KEY}
       # ORACLE_RPC_URL should always point to the mainnet
@@ -101,8 +102,8 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-region: us-east-2
-        awslogs-group: sacred-relay-v0-dev
+        awslogs-region: ${AWS_LOGS_REGION}
+        awslogs-group: ${AWS_LOGS_GROUP}
         awslogs-stream: rinkeby
         awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
@@ -111,8 +112,8 @@ services:
     image: ${RELAY_IMAGE}
     restart: always
     environment:
-      VIRTUAL_HOST: relay-v0.mumbai.dev.sacred.finance
-      LETSENCRYPT_HOST: relay-v0.mumbai.dev.sacred.finance
+      VIRTUAL_HOST: ${MUMBAI_URL}
+      LETSENCRYPT_HOST: ${MUMBAI_URL}
       NET_ID: 80001
       RPC_URL: https://polygon-mumbai.g.alchemyapi.io/v2/${ALCHEMY_KEY}
       # ORACLE_RPC_URL should always point to the mainnet
@@ -136,93 +137,11 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-region: us-east-2
-        awslogs-group: sacred-relay-v0-dev
+        awslogs-region: ${AWS_LOGS_REGION}
+        awslogs-group: ${AWS_LOGS_GROUP}
         awslogs-stream: mumbai
         awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
-
-  polygon_mainnet:
-    image: ${RELAY_IMAGE}
-    restart: always
-    environment:
-      VIRTUAL_HOST: relay-v0.polygon.dev.sacred.finance
-      LETSENCRYPT_HOST: relay-v0.polygon.dev.sacred.finance
-      NET_ID: 137
-      RPC_URL: https://polygon.g.alchemyapi.io/v2/${ALCHEMY_KEY}
-      # ORACLE_RPC_URL should always point to the mainnet
-      ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
-      # without 0x prefix
-      PRIVATE_KEY: ${POLYGON_PK}
-      AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
-      AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
-      # 2.5 means 2.5%
-      RELAYER_FEE: 0.01
-      REDIS_URL: redis://redis/3
-      TIMEOUT: 15000
-      nginx_proxy_read_timeout: 600
-      APP_PORT: 8000
-      NONCE_WATCHER_INTERVAL: 30
-      ALLOWABLE_PENDING_TX_TIMEOUT: 180
-      MAX_GAS_PRICE: 200
-      GAS_PRICE_BUMP_PERCENTAGE: 20
-    depends_on:
-      - redis
-    logging:
-      driver: awslogs
-      options:
-        awslogs-region: us-east-2
-        awslogs-group: sacred-relay-v0-dev
-        awslogs-stream: polygon
-        awslogs-create-group: "true"
-        awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
-
-  #  # this container will proxy *.onion domain to the mainnet container
-  #  tor:
-  #    image: strm/tor
-  #    restart: always
-  #    depends_on: [mainnet]
-  #    environment:
-  #      LISTEN_PORT: 80
-  #      REDIRECT: mainnet:8000
-  #      # Generate a new key with
-  #      # docker run --rm --entrypoint shallot strm/tor-hiddenservice-nginx ^foo
-  #      PRIVATE_KEY: |
-  #        -----BEGIN RSA PRIVATE KEY-----
-  #        ...
-  #        -----END RSA PRIVATE KEY-----
-
-  #  # auto update docker containers when new image is pushed to docker hub (be careful with that)
-  #  watchtower:
-  #    image: v2tec/watchtower
-  #    restart: always
-  #    volumes:
-  #      - /var/run/docker.sock:/var/run/docker.sock
-
-  #  # this container will send Telegram notifications when other containers are stopped/restarted
-  #  # it's best to run this container on some other instance, otherwise it can't notify if the whole instance goes down
-  #  notifier:
-  #    image: poma/docker-telegram-notifier
-  #    restart: always
-  #    volumes:
-  #      - /var/run/docker.sock:/var/run/docker.sock:ro
-  #    environment:
-  #      # How to create bot: https://core.telegram.org/bots#3-how-do-i-create-a-bot
-  #      # How to get chat id: https://stackoverflow.com/questions/32423837/telegram-bot-how-to-get-a-group-chat-id/32572159#32572159
-  #      TELEGRAM_NOTIFIER_BOT_TOKEN: ...
-  #      TELEGRAM_NOTIFIER_CHAT_ID: ...
-
-  #  # this container will send Telegram notifications if specified address doesn't have enough funds
-  #  monitor_mainnet:
-  #    image: peppersec/monitor_eth
-  #    restart: always
-  #    environment:
-  #      TELEGRAM_NOTIFIER_BOT_TOKEN: ...
-  #      TELEGRAM_NOTIFIER_CHAT_ID: ...
-  #      ADDRESS: '0x0000000000000000000000000000000000000000'
-  #      THRESHOLD: 0.5 # ETH
-  #      RPC_URL: https://mainnet.infura.io
-  #      BLOCK_EXPLORER: etherscan.io
 
   redis:
     image: redis
@@ -238,8 +157,8 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-region: us-east-2
-        awslogs-group: sacred-relay-v0-dev
+        awslogs-region: ${AWS_LOGS_REGION}
+        awslogs-group: ${AWS_LOGS_GROUP}
         awslogs-stream: redis
         awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
@@ -262,8 +181,8 @@ services:
     logging:
       driver: awslogs
       options:
-        awslogs-region: us-east-2
-        awslogs-group: sacred-relay-v0-dev
+        awslogs-region: ${AWS_LOGS_REGION}
+        awslogs-group: ${AWS_LOGS_GROUP}
         awslogs-stream: nginx
         awslogs-create-group: "true"
         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
@@ -294,3 +213,85 @@ volumes:
   html:
   certs:
   redis:
+
+# polygon_mainnet:
+#   image: ${RELAY_IMAGE}
+#   restart: always
+#   environment:
+#     VIRTUAL_HOST: ${POLYGON_URL}
+#     LETSENCRYPT_HOST: ${POLYGON_URL}
+#     NET_ID: 80001
+#     RPC_URL: https://polygon.g.alchemyapi.io/v2/${ALCHEMY_KEY}
+#     # ORACLE_RPC_URL should always point to the mainnet
+#     ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
+#     # without 0x prefix
+#     PRIVATE_KEY: ${POLYGON_PK}
+#     AWS_LOGGER_ACCESS_KEY_ID: ${AWS_LOGGER_ACCESS_KEY_ID}
+#     AWS_LOGGER_SECRET_ACCESS_KEY: ${AWS_LOGGER_SECRET_ACCESS_KEY}
+#     # 2.5 means 2.5%
+#     RELAYER_FEE: 0.01
+#     REDIS_URL: redis://redis/3
+#     TIMEOUT: 15000
+#     nginx_proxy_read_timeout: 600
+#     APP_PORT: 8000
+#     NONCE_WATCHER_INTERVAL: 30
+#     ALLOWABLE_PENDING_TX_TIMEOUT: 180
+#     MAX_GAS_PRICE: 200
+#     GAS_PRICE_BUMP_PERCENTAGE: 20
+#   depends_on:
+#     - redis
+#   logging:
+#     driver: awslogs
+#       options:
+#         awslogs-region: ${AWS_LOGS_REGION}
+#         awslogs-group: ${AWS_LOGS_GROUP}
+#         awslogs-stream: polygon
+#         awslogs-create-group: "true"
+#         awslogs-datetime-format: "%Y-%m-%dT%H:%M:%S%z"
+
+#  # this container will proxy *.onion domain to the mainnet container
+#  tor:
+#    image: strm/tor
+#    restart: always
+#    depends_on: [mainnet]
+#    environment:
+#      LISTEN_PORT: 80
+#      REDIRECT: mainnet:8000
+#      # Generate a new key with
+#      # docker run --rm --entrypoint shallot strm/tor-hiddenservice-nginx ^foo
+#      PRIVATE_KEY: |
+#        -----BEGIN RSA PRIVATE KEY-----
+#        ...
+#        -----END RSA PRIVATE KEY-----
+
+#  # auto update docker containers when new image is pushed to docker hub (be careful with that)
+#  watchtower:
+#    image: v2tec/watchtower
+#    restart: always
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock
+
+#  # this container will send Telegram notifications when other containers are stopped/restarted
+#  # it's best to run this container on some other instance, otherwise it can't notify if the whole instance goes down
+#  notifier:
+#    image: poma/docker-telegram-notifier
+#    restart: always
+#    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock:ro
+#    environment:
+#      # How to create bot: https://core.telegram.org/bots#3-how-do-i-create-a-bot
+#      # How to get chat id: https://stackoverflow.com/questions/32423837/telegram-bot-how-to-get-a-group-chat-id/32572159#32572159
+#      TELEGRAM_NOTIFIER_BOT_TOKEN: ...
+#      TELEGRAM_NOTIFIER_CHAT_ID: ...
+
+#  # this container will send Telegram notifications if specified address doesn't have enough funds
+#  monitor_mainnet:
+#    image: peppersec/monitor_eth
+#    restart: always
+#    environment:
+#      TELEGRAM_NOTIFIER_BOT_TOKEN: ...
+#      TELEGRAM_NOTIFIER_CHAT_ID: ...
+#      ADDRESS: '0x0000000000000000000000000000000000000000'
+#      THRESHOLD: 0.5 # ETH
+#      RPC_URL: https://mainnet.infura.io
+#      BLOCK_EXPLORER: etherscan.io

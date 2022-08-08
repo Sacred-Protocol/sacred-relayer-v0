@@ -1,7 +1,48 @@
-# Relayer for Tornado Cash [![Build Status](https://github.com/tornadocash/relayer/workflows/build/badge.svg)](https://github.com/tornadocash/relayer/actions) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/tornadocash/relayer?logo=docker&logoColor=%23FFFFFF&sort=semver)](https://hub.docker.com/repository/docker/tornadocash/relayer)
+# Sacred Relayer
 
+Based on Tornado Cash [![Build Status](https://github.com/tornadocash/relayer/workflows/build/badge.svg)](https://github.com/tornadocash/relayer/actions) [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/tornadocash/relayer?logo=docker&logoColor=%23FFFFFF&sort=semver)](https://hub.docker.com/repository/docker/tornadocash/relayer)
 
-## Run locally
+## Data collection
+
+Information the relay collects includes: 
+- ip address
+- browser details (type, engine etc)
+
+```
+relay-v0.mumbai.dev.sacred.finance 54.227.32.154 - - [29/Apr/2022:00:52:44 +0000] "GET / HTTP/1.1" 200 125 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15" "172.18.0.7:8000"
+```
+
+Other details include
+
+- route called
+- date / time
+- response code
+- error message (if applicable)
+
+and
+
+```
+relay-v0.mumbai.dev.sacred.finance 65.154.226.171 - - [28/Apr/2022:19:48:47 +0000] "GET / HTTP/1.1" 301 169 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.71 Safari/537.36" "-"
+2022/04/28 19:48:48 [warn] 75#75: no resolver defined to resolve r3.o.lencr.org while requesting certificate status, responder: r3.o.lencr.org, certificate: "/etc/nginx/certs/relay-v0.mumbai.dev.sacred.finance.crt"
+relay-v0.mumbai.dev.sacred.finance 65.154.226.171 - - [28/Apr/2022:19:48:48 +0000] "GET / HTTP/2.0" 200 125 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.71 Safari/537.36" "172.18.0.7:8000"
+```
+
+This is collected by the load balancer/ingress
+
+The relayers themselves collect operational information and errors in the relayers
+
+```
+Hostname/IP does not match certificate's altnames: Host: polygon-mumbai.g.alchemyapi.io. is not in the cert's altnames: DNS:alchemyapi.io, DNS:*.ws.alchemyapi.io, DNS:*.alchemyapi.io
+(node:21) UnhandledPromiseRejectionWarning: Error: Default RPC is down. Probably a network error.
+    at fetchGasPriceFromRpc (/app/src/utils.js:224:11)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (internal/process/task_queues.js:97:5)
+(node:21) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 4)
+```
+
+## Deploy
+
+### Local
 
 1. `npm i`
 2. `cp .env.example .env`
@@ -20,25 +61,7 @@ _Note._ If you want to change contracts' addresses go to [config.js](./config.js
 
 ## Deploy with docker-compose
 
-docker-compose.yml contains a stack that will automatically provision SSL certificates for your domain name and will add a https redirect to port 80.
-
-1. Download docker-compose.yml
-2. Change environment variables for `kovan` containers as appropriate
-   - add `PRIVATE_KEY` for your relayer address (without 0x prefix)
-   - set `VIRTUAL_HOST` and `LETSENCRYPT_HOST` to your domain and add DNS record pointing to your relayer ip address
-   - customize `RELAYER_FEE`
-   - update `RPC_URL` if needed
-   - update `REDIS_URL` if needed
-3. Run `docker-compose up -d`
-
-## Run as a Docker container
-
-1. `cp .env.example .env`
-2. Modify `.env` as needed
-3. `docker run -d --env-file .env -p 80:8000 tornadocash/relayer`
-
-In that case you will need to add https termination yourself because browsers with default settings will prevent https
-tornado.cash UI from submitting your request over http connection
+See the [deploy instructions](DEPLOY.md) for various environments (local, aws and load balanced)
 
 ## Input data example
 
