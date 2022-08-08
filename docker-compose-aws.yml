@@ -114,7 +114,7 @@ services:
     environment:
       VIRTUAL_HOST: ${MUMBAI_URL}
       LETSENCRYPT_HOST: ${MUMBAI_URL}
-      NET_ID: 80001
+      NET_ID: 8000
       RPC_URL: https://polygon-mumbai.g.alchemyapi.io/v2/${ALCHEMY_KEY}
       # ORACLE_RPC_URL should always point to the mainnet
       ORACLE_RPC_URL: https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}
